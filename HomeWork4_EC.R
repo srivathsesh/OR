@@ -1,0 +1,27 @@
+library(purrr)
+library(ggplot2)
+N <- seq(1000,10000,500)
+results <- map_df(.x = N,.f = estimatepi) %>% 
+  mutate(N = N)
+
+# Plot results
+
+results %>% 
+  ggplot(mapping = aes(x = N, y = pi_estimate,ymin = LowerConfLimit,ymax = UpperConfLimit)) + 
+  geom_pointrange(alpha = 0.5) + geom_hline(yintercept = pi, col = 'red') + 
+  geom_hline(yintercept = pi-0.05, lty = 2, col = 'red') +
+  geom_hline(yintercept = pi+0.05, lty = 2, col = 'red') +
+  geom_vline(xintercept = 7750, col = 'blue') +
+  theme_bw()
+
+
+N_optimal = rep(8000,500)
+
+# 500 simulation iterations
+results_rep <- map_df(.x = N_optimal,.f = estimatepi)
+lattice::histogram(x = ~pi_estimate, data = results_rep)
+
+data.frame(Pi_std.Dev = sd(results_rep$pi_estimate),
+           pi_stdError = results$pi_StdError[results$N == 8000],
+           PercentWithinCI = length(between(results_rep$pi_estimate,results$LowerConfLimit[results$N == 8000],
+                                            results$UpperConfLimit[results$N == 8000]))/500*100)
