@@ -1,0 +1,111 @@
+---
+title: "Project_Presentation"
+author: "Sri Seshadri"
+date: "8/26/2018"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F)
+library(magrittr)
+library(dplyr)
+library(plotly)
+library(leaflet)
+library(plotly)
+library(forcats)
+library(reticulate)
+library(gmapsdistance)
+use_condaenv("min")
+knitr::knit_engines$set(python = reticulate::eng_python)
+use_python('/Users/srivathsanseshadri/anaconda3/bin/python')
+Sys.setenv('MAPBOX_TOKEN'='pk.eyJ1Ijoic3Jpc2VzaGFkcmkiLCJhIjoiY2prb3N2Ym9xMDU4MzNxczdobnE4bmh4NSJ9.YZHBzkCWrB1PVX8jeCilHg')
+library(gmapsdistance)
+set.api.key('AIzaSyAzxdy7UbvEsM3AGLi5c7FQvYghgQivEHI')
+
+```
+
+# Selected Nodes
+
+Selected nodes = 16
+
+Total bikes = 100
+
+Instantaenous demands generated (+ve and -ve) summing up to zero
+
+```{r}
+df <- read.csv('nodes.csv')
+df %<>% dplyr::filter(Selection == 1) 
+
+df <- df[1:16,]
+
+set.seed(100)
+
+rand_vect <- function(N, M, sd = 1, pos.only = TRUE) {
+  vec <- rnorm(N, M/N, sd)
+  
+  if (abs(sum(vec)) < 0.01) vec <- vec + 1
+  vec <- round(vec / sum(vec) * M)
+  deviation <- M - sum(vec)
+  for (. in seq_len(abs(deviation))) {
+    vec[i] <- vec[i <- sample(N, 1)] + sign(deviation)
+  }
+  if (pos.only) while (any(vec < 0)) {
+    negs <- vec < 0
+    pos  <- vec > 0
+    vec[negs][i] <- vec[negs][i <- sample(sum(negs), 1)] + 1
+    vec[pos][i]  <- vec[pos ][i <- sample(sum(pos ), 1)] - 1
+  }
+  vec
+}
+
+total_bikes <- 100
+
+df %<>%
+  mutate(Demand = rand_vect(nrow(df),!!total_bikes,45),
+         Available = rand_vect(nrow(df),!!total_bikes,45),
+         InstantDemand = Available - Demand)
+
+leaflet(data = df) %>% 
+  addProviderTiles('CartoDB',options = providerTileOptions(minZoom = 13, maxZoom = 15)) %>% 
+  setView(lng = -74.0506564, lat = 40.7241765, zoom = 15) %>% 
+  addCircleMarkers(lat = df$lat,lng = df$lon,color = 'red',
+                   label = ~name,labelOptions = labelOptions(textsize = 1,noHide = T,textOnly = T)) %>% 
+  addAwesomeMarkers(lng = -74.046798,lat = 40.720710, label = "Depot",labelOptions = labelOptions(textsize = 1,noHide = T,textOnly = T))
+
+```
+
+# Map with demand
+
+```{r}
+leaflet(data = df) %>%
+  addProviderTiles('CartoDB',options = providerTileOptions(minZoom = 13, maxZoom = 15)) %>%
+  setView(lng = -74.0506564, lat = 40.7241765, zoom = 13) %>%
+  addCircleMarkers(lat = df$lat,lng = df$lon,color = 'red',
+                   label = as.character(df$InstantDemand),labelOptions = labelOptions(textsize = 2,noHide = T,textOnly = T)) %>% addAwesomeMarkers(lng = -74.046798,lat = 40.720710, label = "Depot",labelOptions = labelOptions(textsize = 1,noHide = T,textOnly = T))
+
+```
+
+
+# Distances
+
+
+
+
+```{r}
+
+df %<>% 
+mutate(destinations = paste0(as.character(lat),"+",as.character(lon)))
+
+distances <- gmapsdistance(origin = c("40.69089272+-73.99612349",df$destinations),destination = c("40.69089272+-73.99612349",df$destinations), mode = 'driving')
+distmat <- distances$Distance
+names(distmat) <- c("","depot",as.character(df$name))
+distancesmat <- distmat[,2:18]
+rownames(distancesmat) <- colnames(distancesmat)
+```
+
+```{r}
+write.csv(distancesmat,file = 'distmat2.csv')
+write.csv(df,'rawdata2.csv')
+```
+

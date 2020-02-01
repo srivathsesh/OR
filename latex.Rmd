@@ -1,0 +1,16 @@
+---
+title: "Project Methodology"
+author: "Sri Seshadri"
+date: "8/29/2018"
+output:
+  pdf_document: default
+ 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# 3. Methodology
+
+  $\sum_{j \in T_{i}}d_{j}>=0 (i \in V)$

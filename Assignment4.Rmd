@@ -1,0 +1,21 @@
+---
+title: "Assignment4"
+author: "Sri Seshadri"
+date: "8/19/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+## Problem 1
+
+### Linear Model
+
+In this problem a linear model $y = ax+b$ is fit, where $y$ is Average Revenue and $x$ is Hours of operation. The strategy was to set $a$ and $b$ to be _decision variables_ and the _minimize the mean absolute deviation_ between the fitted model and the actual average revenue. 
+
+The _LSRG_ solver in the educational license of ASPE was not available and hence a default non-linear optimization engine was chosen with multiple start points. 
+
+![Problem 2 ASPE formulation](Figures\Honework4\p1a,JPG){height=50%}
+

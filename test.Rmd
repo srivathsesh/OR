@@ -1,0 +1,272 @@
+---
+title: "Assignment 4"
+author: "Sri Seshadri"
+date: "8/19/2018"
+output: 
+ pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.align = "center",fig.pos = 'h',tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## Problem 1
+
+### Linear Model
+
+In this problem a linear model $y = ax+b$ is fit, where $y$ is Average Revenue and $x$ is Hours of operation. The strategy was to set $a$ and $b$ to be _decision variables_ and the _minimize the mean absolute deviation_ between the fitted model and the actual average revenue. 
+
+The _LSRG_ solver in the educational license of ASPE was not available and hence a default non-linear optimization engine was chosen with multiple start points. The model set up is shown in figure 1.
+
+![Linear Model](Figures\Honework4\p1a.JPG){height=50%,width=50%}
+
+The final model is $y = 4890 + 39.33x$, where where $y$ is Average Revenue and $x$ is Hours of operation.
+
+*For 120 hours of operation the average revenue based on the linear model is $9610*
+
+![Linear Model plot](Figures\Honework4\p1a_plot.PNG){height=50%}
+
+### Non -linear model
+
+Here the model $y = ax^{b}$ is fit to the same data, the strategy here was similar to the above, where we minimize the mean absolute deviation between fitted and actuals. 
+
+![Non Linear Model](Figures\Honework4\p1b.PNG){height=50%,width=50%}
+
+The value of $a = 1113.03$ and $b = 0.46$; thus
+
+$y = 1113.03x^{0.46}$ where $y$ is Average Revenue and $x$ is Hours of operation.
+
+*For 120 hours of operation the average revenue based on the non linear model is $9897.29*
+
+![Non-Linear Model plot](Figures\Honework4\p1b_plot.PNG){height=50%}
+
+*Comparing the Mean absolute deviation of either models; 678.5 for linear and  571.65 for non linear model, the non linear model prediction seems ideal. However one needs to be mindful of overfitting.*
+
+
+\pagebreak
+
+## Problem 2
+
+In this problem, an S curve model is fit for $S = a + \frac{(b-a)E^{c}}{(d + E^{c})}$; where $(a,b,c,d)$ are constants; $E$ is effort in % and $S$ being the Actual Sales (% of Current)
+
+The optimization model is set such that $a,b,c$ and $d$ are _decision variables_ and the objective function is sum of squared errors between the model fit and the actuals (residuals). The objective function is _minimized_. 
+
+![S curve model](Figures\Honework4\p2.PNG){height=50%}
+
+![S curve model plot](Figures\Honework4\p2_plot.PNG){height=50%}
+
+
+*a) Hence the model is :*
+
+$S = 28.16 + \frac{(1073644-28.16)E^{0.598}}{(235033.1 + E^{0.598})}$
+
+*b) The predicted value for 115% Effort based on this model is 106.2*
+
+\pagebreak
+
+
+## Problem 3
+
+This is problem is a modification of the example problem in Chapter 12. The _decision variables_ are the Reorder point and Order Quantity. The goal is to find the optimal quantities for the decision variables that maximizes the average monthly profit. 
+
+### Assumption made:
+
+The Holding cost and ordering cost are NOT sunk in the profit margin ($45 per unit)
+
+### Limitation of Education version of ASPE
+
+Due to limitation of educational license of ASPE, the holding cost, ordering cost and opportunity cost are not shown in separate columns. They are collapsed into a single column where
+
+The formula in K2 is `=E2*$O$7-(B2*$O$4+H2*$O$5+(MAX(D2-E2,0)*$O$6))`, which copied all the way down for column K. As shown in Figure 7.
+
+### Constraint
+
+The Re-order point and Order quanity were constrainted to take values >= 1 and constrained to be integers.
+
+![Inventory model](Figures\Honework4\p3.PNG){height=50%}
+
+### Uncertain inputs
+
+The Demand and Lead time for delivery for orders were stocastic and is shown in Figures 8 and 9.
+
+![Inventory model - Demand](Figures\Honework4\p3_demand.PNG){height=20%}
+
+![Inventory model - Lead Time](Figures\Honework4\p3_LT.PNG){height=20%}
+
+### Objective function variability
+
+The objective function variability is shown in Figure 10.
+
+![Inventory model - Lead Time](Figures\Honework4\p3_ObjFunHist.PNG){height=30%}
+
+### Optimal Values
+
+**The Reorder point of 41 and Order Quantity of 30 proved to optimal**. (The values vary subtly based on seed of the random number generator, the seed used here is 123)
+
+\pagebreak
+
+
+## Problem 4
+
+In this problem, the goal is to find maximum number of reservations that can be accepted for hotel rooms. The hotel has a 100 rooms; there is a 5% chance of no show. When more guests show up than available rooms, there is a compensation of 200 dollars paid to the customer. It is assumed that the guest does not pay for the room that they are checked into. All guests pay (`$150`) at check in if they have a room. There is variable cost of $30 per room occupied.
+
+### Simulation set up
+
+The simulation set up is shown in figure 11. There are 10 simulations run for different scenarios of accepted reservations ranging from 101 through 110. The Marginal profit (Revenue - variable cost - cost of turning away customers) is monitored for each of the simulation runs.
+
+![Hotel reservation model](Figures\Honework4\p4.PNG){height=50%}
+
+#### Assumptions
+
+*The demand for rooms is assumed to have a binomial distribution with a shift of 75.* See figure 12.
+
+![Hotel demand model](Figures\Honework4\p4_input.PNG){height=50%}
+
+#### Simulation out put
+
+**The results of the simulation is shown in figure 13. It is seen that the 5th simulation where maximum reservation accepted is 105 gives us the maximum marginal profit of $11351.20.**
+
+![Simulation results](Figures\Honework4\p4_result.PNG){height=50%}
+
+\pagebreak
+
+### Problem 5
+
+In this problem the goal is see what is the probability of viability of introducing a prodcut to the market that has uncertain market life, manufacturing cost,unit to be sold per year. However the R & D investment, sale price and cost of capital are assumed to be certain. The net present value of the invenstment over the span of market life is simulated.
+
+#### Assumption made.
+
+The problem does not state clearly if the cost of manufacturing per machine randomly varies for each year of market life. The solution to this problem assumes it is so. Each year the manufacturing cost is assumed to have a triangular distribution of min = 12K, most likely = 14K and max = 18K. 
+
+The model set is shown in figure 14.
+
+![Product viability simulation model](Figures\Honework4\p5.PNG){height=50%}
+
+#### Simulation output
+
+The Net Present Value (NPV) of the 1000 iterations of the simulation models is studied and the probability of NPV > 0 is evaluated.
+
+![Product viability simulation result](Figures\Honework4\p5_hist.PNG){height=40%}
+
+**It is seen that the probability of a viable product is 83.3%.**
+
+\pagebreak
+
+### Extra Credit
+
+The below function **estimatepi**, takes in an argument for N and outputs a data frame that contain the estimate of pi, standard error of the estimate and the 95% confidence interval around the estimate. The function generates N pairs of uniformly distributed random numbers between 0 and 1 for $x$ and $y$ coordinates. A subfunction **insidecircle** checks if the pair of points lie within a unit circle; by checking if $x^{2} + y^{2} <= 1$. insidecircle returns a 1 if the pair of point is within the radius of the unit circle, else returns a 0.
+
+Details of the code can be seen in the code chunk below.
+
+\pagebreak
+
+
+```{r, warning = F, message=F}
+#' This function estimates the value of pi using a unit circle.
+#'
+#' @param N, integer value denoting the number of random points to generate
+#'
+#' @return data frame with estimate of pi, standard error of estimate and the 95% confidence interval
+#' @export
+#'
+#' @examples estimatepi(1000)
+estimatepi <- function(N){
+  library(magrittr)
+  library(dplyr)
+  
+# Function to flag points that are inside unit circle.
+  insidecircle <- function(x,y){
+    ifelse(x^2+y^2 <= 1,1,0)
+  }
+  
+  df <- data.frame(x = abs(runif(N)),
+                   y = abs(runif(N)))
+  df %<>% dplyr::mutate(selected = insidecircle(x,y))
+  
+  # Get estimate of points that fall with a unit quarter-circle
+  pi_estimate <- df %>% 
+    summarise(estimate = sum(selected)/n()*4) %>% 
+    as.numeric(.)
+  # Store the proporation for ease of computation below
+  prop <- sum(df$selected)/nrow(df)
+  #CI <- prop.test(sum(df$selected),nrow(df))$conf.int
+  
+ StdErrorProp <- sqrt(prop*(1-prop)/nrow(df))
+ E <- qnorm(.975) * StdErrorProp
+ 
+ CI <- c(prop- E,prop + E)
+ 
+ pi_se <- StdErrorProp * 4
+ pi_CI <- CI * 4
+ 
+ # Return estimate of pi, the standard error and the 95% confidence interval
+ 
+ data.frame(pi_estimate = pi_estimate,
+            pi_StdError = pi_se,
+            LowerConfLimit = pi_CI[1],
+            UpperConfLimit = pi_CI[2])
+ 
+}
+```
+
+**The function estimatepi is run to estimate the value of pi for N varying from 1000 to 10000 in steps of 500. The code chunk below shows the execution.**
+
+
+```{r,warning = F, message=F}
+library(purrr)
+library(ggplot2)
+N <- seq(1000,10000,500)
+set.seed(111)
+results <- map_df(.x = N,.f = estimatepi) %>% 
+  mutate(N = N)
+```
+
+
+**Figure 16 shows the confidence interval around the estimate of pi against each value of $N$. The solid red line shows the true value of pi and the dashed red lines show $\pm 0.05$ (total band width of 0.1) from pi.**
+
+**It can be seen that from N >= 9000, the estimate safely falls within $\pm 0.05$ of true value of pi.**
+
+```{r,warning = F, message=F,fig.cap="Estimate of pi by N"}
+# Plot results
+
+results %>% 
+  ggplot(mapping = aes(x = N, y = pi_estimate,ymin = LowerConfLimit,ymax = UpperConfLimit)) + 
+  geom_pointrange(alpha = 0.5) + geom_hline(yintercept = pi, col = 'red') + 
+  geom_hline(yintercept = pi-0.05, lty = 2, col = 'red') +
+  geom_hline(yintercept = pi+0.05, lty = 2, col = 'red') +
+  geom_vline(xintercept = 8750, col = 'blue') +
+  theme_bw()
+
+```
+
+
+#### Repeated simulation for N = 9000
+
+The estimate of pi is simulated 500 times using a value of N = 9000. The histogram of the extimate is shown in figure 17. The distribution is normal looking as expected - due to central limit theorm.
+
+```{r,warning = F, message=F}
+N_optimal = rep(9000,500)
+
+# 500 simulation iterations
+results_rep <- map_df(.x = N_optimal,.f = estimatepi)
+lattice::histogram(x = ~pi_estimate, data = results_rep)
+
+
+```
+
+#### Validation
+
+Table 1 shows the Average estimate of pi and the standard deviation of the estimate of pi. The standard error computed with N = 9000 previously is very close to that of the standard deviation of the estimate for the 500 simulations.  of the estimate falls within the confidence interval estimated previously.
+
+```{r,warning = F, message=F}
+knitr::kable(data.frame(Average_Pi_estimate = mean(results_rep$pi_estimate),
+                        Pi_std.Dev = sd(results_rep$pi_estimate),
+           pi_stdError = results$pi_StdError[results$N == 9000],
+           PercentWithinCI = sum(between(results_rep$pi_estimate,results$LowerConfLimit[results$N == 9000],
+                                            results$UpperConfLimit[results$N == 9000]))/500*100))
+```
+
+
+
+
+

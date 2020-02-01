@@ -1,0 +1,83 @@
+---
+title: "Assignment 3"
+author: "Sri Seshadri"
+date: "8/5/2018"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+header-includes: \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,fig.align = "center",fig.pos = 'h')
+```
+
+# Problem 1
+
+Here there are two scenarios that will be inspected using Integer Linear Programming (ILP) to model total cost. Scenario 1 - plant in Baltimore, Scenario 2 - plant in Seattle.
+
+## Scenario 1
+
+### Formulation:
+
+The model is formulated as a network flow model as shown in the figure below, where nodes 1 through 5 are Los Angeles, Baltimore, Atlanta, Tulsa and New York respectively
+
+```{r, fig.height=2}
+knitr::include_graphics("Figures/Homework3/1aFig.PNG")
+```
+
+#### Decision variables:
+
+Let $X_{ij}$ be the flow from node $i$ to $j$ where $i\in \{2,3,4\}$ and $j \in \{1,5\}$
+
+$X_{ij}$ are the decision variables.
+
+#### Other variables
+
+Let $C_{ij}$ be the cost variable for distribution of toys between $X_ij$ 
+Let $D_{i}$ be the supply at $i$ and $D_{j}$ be the demand at $j$. $D_{i}$ is denoted with a negative number and the $D_{j}$ as positive number for modeling as a network flow problem.
+
+
+#### Objective function
+
+$Min$ $Total Cost$ = $X_{ij}C_{ij}$
+
+
+#### Constraints:
+
+Since the supply equals the demand ($\sum_{i}D_{i}$ $+$ $\sum_{j}D_{j} = 0$), the model will be constrained as 
+$Inflow - Outflow = Supply$ $or$ $Demand$. 
+
+The constraints in explicit form are:
+
+$X_{21} + X_{31} + X_{41} - 0 = D_{1}$ where $D_{1} = 800$
+$X_{25} + X_{35} + X_{45} - 0 = D_{5}$ where $D_{5} = 1200$
+
+$0 - X_{21} - X_{25} = D_{2}$ Where $D_{2} = -500$
+$0 - X_{31} - X_{35} = D_{3}$ Where $D_{3} = -600$
+$0 - X_{41} - X_{45} = D_{4}$ Where $D_{2} = -900$
+
+$X_{ij} > = 0$ and $X_{ij}$ are integers
+
+
+### ASME Modeling
+
+Figures 1 and 2 show the model set up in ASPE
+
+![Problem 1 ASPE formulation](Figures\Homework3\p1a.PNG){height=50%}
+
+![Problem 1 ASPE Model setup](Figures\Homework3\modelp1a.PNG){height=50%}
+
+
+### Scenario 1 Results
+
+The Total cost for a plant in Baltimore was $9900
+
+## Scenario 2
+
+![Problem 1 ASPE formulation](Figures\Homework3\p1b.PNG){height=50%}
+
+
+
+
